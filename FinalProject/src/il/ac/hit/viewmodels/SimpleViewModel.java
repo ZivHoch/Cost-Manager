@@ -6,6 +6,7 @@ import il.ac.hit.models.IModel;
 import il.ac.hit.views.IView;
 import il.ac.hit.views.Item;
 import il.ac.hit.views.Message;
+import il.ac.hit.views.Person;
 
 import javax.swing.*;
 import java.util.concurrent.ExecutorService;
@@ -83,38 +84,6 @@ public class SimpleViewModel implements IViewModel {
         });
     }
 
-//    @Override
-//    public void deleteAllItems() {
-//
-//    }
-
-//    @Override
-//    public void deleteAllItems() {
-//        service.submit(new Runnable() {
-//            @Override
-//            public void run() {
-//                try {
-//                    model.deleteAllItems();
-//                    Item []items = model.getItems();
-//                    SwingUtilities.invokeLater(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            view.showMessage(new Message("All items were deleted"));
-//                            view.showItems(items);
-//                        }
-//                    });
-//                } catch(ToDoListException e) {
-//                    SwingUtilities.invokeLater(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            view.showMessage(new Message("There is no items to delete"));
-//                        }
-//                    });
-//                }
-//            }
-//        });
-//    }
-
     @Override
     public void deleteItem(int id) {
         service.submit(new Runnable() {
@@ -135,6 +104,56 @@ public class SimpleViewModel implements IViewModel {
                         @Override
                         public void run() {
                             view.showMessage(new Message("problem with deleting the item"));
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    @Override
+    public void addPerson(Person person) {
+        service.submit(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    model.addPerson(person);
+                    SwingUtilities.invokeLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            view.showMessage(new Message("you register successfully! please login to enjoy our features"));
+                        }
+                    });
+                } catch(ToDoListException e) {
+                    SwingUtilities.invokeLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            view.showMessage(new Message(e.getMessage()));
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    @Override
+    public void checkUserExistence(String firstName, String password) {
+        service.submit(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Person person = model.getPerson(firstName,password);
+                    SwingUtilities.invokeLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            view.showPerson(person);
+                        }
+                    });
+                } catch(ToDoListException e) {
+                    SwingUtilities.invokeLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            view.showMessage(new Message("there is something wrong with the name or the password!\n please try again"));
                         }
                     });
                 }
